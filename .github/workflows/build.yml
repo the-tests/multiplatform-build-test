@@ -34,6 +34,7 @@ jobs:
             assets=./extra_context
           platforms: linux/amd64,linux/arm64
           push: false
+          load: true
           tags: ${{ env.IMAGE_NAME }}
           build-args: |
             BASE_IMAGE=${{ env.BASE_IMAGE }}
@@ -42,7 +43,7 @@ jobs:
       - name: List images
         shell: bash
         run: |
-          echo '# Images:' >> "${GITHUB_STEP_SUMMARY}"
+          echo '## Images:' >> "${GITHUB_STEP_SUMMARY}"
           echo '```' >> "${GITHUB_STEP_SUMMARY}"
           printf "$(docker images)\n" >> "${GITHUB_STEP_SUMMARY}"
           echo '```' >> "${GITHUB_STEP_SUMMARY}"
@@ -50,7 +51,7 @@ jobs:
       - name: Inspect image
         shell: bash
         run: |
-          echo '# ${{ env.IMAGE_NAME }} Image:' >> "${GITHUB_STEP_SUMMARY}"
+          echo '## ${{ env.IMAGE_NAME }} Image:' >> "${GITHUB_STEP_SUMMARY}"
           echo '```' >> "${GITHUB_STEP_SUMMARY}"
           printf "$(docker inspect ${{ env.IMAGE_NAME }})\n" >> "${GITHUB_STEP_SUMMARY}"
           echo '```' >> "${GITHUB_STEP_SUMMARY}"

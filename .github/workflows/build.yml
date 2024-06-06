@@ -34,7 +34,9 @@ jobs:
             assets=./extra_context
           platforms: linux/amd64,linux/arm64
           push: false
-          load: true
+          # ERROR: docker exporter does not currently support exporting manifest lists
+          # https://github.com/docker/buildx/issues/59
+          # load: true
           cache-to: type=local,dest=.
           tags: ${{ env.IMAGE_NAME }}
           build-args: |

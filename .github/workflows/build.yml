@@ -24,7 +24,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
+
+      - name: Get now
+        shell: bash
+        run: |
+          printf "NOW=$(date +%Y%m%d-%H%M)\n" >> "${GITHUB_ENV}"
+
       - name: Build
         uses: docker/build-push-action@v5
         with:
@@ -37,7 +42,7 @@ jobs:
           # https://github.com/docker/buildx/issues/59
           # load: true
           cache-to: type=local,dest=./cache
-          tags: ${{ secrets.DOCKERHUB_REPO }}:${{ github.ref_name }}
+          tags: ${{ secrets.DOCKERHUB_REPO }}:${{ env.NOW }}
           build-args: |
             BASE_IMAGE=${{ env.BASE_IMAGE }}
             APP_PORT=8080
@@ -58,10 +63,10 @@ jobs:
           printf "$(ls -lh .)\n" >> "${GITHUB_STEP_SUMMARY}"
           echo '```' >> "${GITHUB_STEP_SUMMARY}"
 
-      # - name: Store image
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: image_cache
-      #     compression-level: 9
-      #     path: ./cache/
-      #     overwrite: true
+      - name: Store image
+        uses: actions/upload-artifact@v4
+        with:
+          name: image_cache_${{ env.NOW }}
+          compression-level: 9
+          path: ./cache/
+          overwrite: true

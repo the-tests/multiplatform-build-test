@@ -37,7 +37,7 @@ jobs:
           # ERROR: docker exporter does not currently support exporting manifest lists
           # https://github.com/docker/buildx/issues/59
           # load: true
-          cache-to: type=local,dest=.
+          cache-to: type=local,dest=./cache
           tags: ${{ env.IMAGE_NAME }}
           build-args: |
             BASE_IMAGE=${{ env.BASE_IMAGE }}
@@ -59,10 +59,19 @@ jobs:
           printf "$(ls -lh .)\n" >> "${GITHUB_STEP_SUMMARY}"
           echo '```' >> "${GITHUB_STEP_SUMMARY}"
 
-      - name: Inspect image
-        shell: bash
-        run: |
-          echo '## ${{ env.IMAGE_NAME }} Image:' >> "${GITHUB_STEP_SUMMARY}"
-          echo '```' >> "${GITHUB_STEP_SUMMARY}"
-          printf "$(docker inspect ${{ env.IMAGE_NAME }})\n" >> "${GITHUB_STEP_SUMMARY}"
-          echo '```' >> "${GITHUB_STEP_SUMMARY}"
+      # load doesn't work
+      # - name: Inspect image
+      #   shell: bash
+      #   run: |
+      #     echo '## ${{ env.IMAGE_NAME }} Image:' >> "${GITHUB_STEP_SUMMARY}"
+      #     echo '```' >> "${GITHUB_STEP_SUMMARY}"
+      #     printf "$(docker inspect ${{ env.IMAGE_NAME }})\n" >> "${GITHUB_STEP_SUMMARY}"
+      #     echo '```' >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Store image
+        uses: actions/upload-artifact@v4
+        with:
+          name: image_cache
+          compression-level: 9
+          path: ./cache/
+          overwrite: true

@@ -1,0 +1,16 @@
+version: '3.0'
+
+services:
+  hello-flask:
+    build:
+      context: ./main_context
+      additional_contexts:
+        - assets=./extra_context
+      args:    
+        - BASE_IMAGE=python:3.12.3-alpine
+        - APP_PORT=8080
+    container_name: hello-flask
+    image: localhost/hello-flask-image:latest
+    ports:
+      - "8080:8080"
+    network_mode: bridge
